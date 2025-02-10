@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         iCareMonkey
-// @namespace    http://tampermonkey.net/
+// @namespace    http://parceiro.sky.com.br
 // @version      1.4
 // @description  iCareMonkey
 // @author       Você
