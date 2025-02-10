@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         iCareMonkey
 // @namespace    http://tampermonkey.net/
-// @version      1.3
+// @version      1.4
 // @description  iCareMonkey
 // @author       Você
 // @match        https://parceiro.sky.com.br/*
@@ -58,3 +58,5 @@
         loginSimultaneoOriginal.call(this, method, url, ...rest);
     };
 })();
+
+//teste
