@@ -7,6 +7,8 @@
 // @match        https://parceiro.sky.com.br/*
 // @grant        none
 // ==/UserScript==
+// @updateURL    https://raw.githubusercontent.com/lemardigital/icaremonkey/refs/heads/main/icaremoneky.js
+// @downloadURL  https://raw.githubusercontent.com/lemardigital/icaremonkey/refs/heads/main/icaremoneky.js
 
 (function() {
     'use strict';
