@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         iCareMonkey
 // @namespace    http://parceiro.sky.com.br
-// @version      1.4
+// @version      1.0.1
 // @description  iCareMonkey
 // @author       Você
 // @match        https://parceiro.sky.com.br/*
