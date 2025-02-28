@@ -58,5 +58,3 @@
         loginSimultaneoOriginal.call(this, method, url, ...rest);
     };
 })();
-
-//teste
