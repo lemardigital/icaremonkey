@@ -57,3 +57,4 @@
         loginSimultaneoOriginal.call(this, method, url, ...rest);
     };
 })();
+// 1.0.2
