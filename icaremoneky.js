@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         iCareMonkey
 // @namespace    http://parceiro.sky.com.br
-// @version      1.0.2
+// @version      1.0.3
 // @description  iCareMonkey
 // @author       Você
 // @match        https://parceiro.sky.com.br/*
 // @grant        none
-// ==/UserScript==
 // @updateURL    https://raw.githubusercontent.com/lemardigital/icaremonkey/refs/heads/main/icaremoneky.js
 // @downloadURL  https://raw.githubusercontent.com/lemardigital/icaremonkey/refs/heads/main/icaremoneky.js
+// ==/UserScript==
 
 (function() {
     'use strict';
