@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         iCareMonkey
 // @namespace    http://parceiro.sky.com.br
-// @version      1.3.2
+// @version      1.3.3
 // @description  iCareMonkey
 // @author       Você
 // @match        https://parceiro.sky.com.br/*
@@ -12,6 +12,27 @@
 
 (function() {
     'use strict';
+
+    const loginSimultaneo = `{
+        true
+        }`;
+        // Intercepta XMLHttpRequest LoginSimultaneo
+        const loginSimultaneoOriginal = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+            if (url.includes("LoginSimultaneo.ashx")) {
+                console.log("[Tampermonkey] Interceptando LoginSimultaneo.ashx (XHR)");
+    
+                this.addEventListener("readystatechange", function() {
+                    if (this.readyState === 4) {
+                        Object.defineProperty(this, "responseText", {
+                            get: () => loginSimultaneo
+                        });
+                    }
+                });
+            }
+    
+            loginSimultaneoOriginal.call(this, method, url, ...rest);
+        };
 
     // Cria um JSON seguro para uso dentro do script
     const safeJSON = (function() {
