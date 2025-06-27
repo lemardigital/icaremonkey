@@ -51,9 +51,19 @@
                 } catch (error) {
                     throw new Error("JSON inválido: " + error.message);
                 }
+            },
+            stringify: function(obj) {
+                try {
+                    return Object.prototype.toString.call(obj) === "[object Object]" || Array.isArray(obj)
+                        ? new Function("return JSON.stringify")(obj)  // tenta acessar nativamente, mesmo que sobrescrito
+                        : String(obj);
+                } catch (error) {
+                    throw new Error("Erro ao converter JSON: " + error.message);
+                }
             }
         };
     })();
+
 
     // Obtém data e período atual
     function getCurrentDateInfo() {
@@ -170,5 +180,64 @@
 
         originalOpen.call(this, method, url, ...rest);
     };
+
+    const n8nWebhookURL = "https://mtsmendoa.app.n8n.cloud/webhook-test/d0e972f6-886d-4e8d-839f-bacce28bf3f8";
+
+    // Intercepta XMLHttpRequest - JobCardManagement
+    const jobcardOpenOriginal = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function(method, url, ...rest) {
+        if (url.includes("JobCardManagement.ashx")) {
+            const _this = this;
+            const originalSend = this.send;
+
+            this.send = function(body) {
+                let isTargetRequest = false;
+
+                try {
+                    const parsedBody = safeJSON.parse(body);
+                    if (parsedBody?.HandleAction === "GetJobcardDetail") {
+                        isTargetRequest = true;
+                        console.log("[Tampermonkey] Interceptando GetJobcardDetail:", parsedBody);
+                    }
+                } catch (e) {
+                    console.warn("[Tampermonkey] Erro ao analisar corpo do request:", e);
+                }
+
+                if (isTargetRequest) {
+                    _this.addEventListener("readystatechange", function() {
+                        if (_this.readyState === 4) {
+                            try {
+                                // Envia o responseText diretamente, sem parse/stringify
+                                console.log("[Tampermonkey] Enviando conteúdo para webhook n8n...");
+
+                                fetch(n8nWebhookURL, {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: _this.responseText
+                                }).then(res => {
+                                    if (!res.ok) {
+                                        console.warn("[Tampermonkey] Webhook retornou erro:", res.status);
+                                    } else {
+                                        console.log("[Tampermonkey] Dados enviados com sucesso ao webhook!");
+                                    }
+                                }).catch(err => {
+                                    console.warn("[Tampermonkey] Falha ao enviar para webhook:", err);
+                                });
+                            } catch (err) {
+                                console.warn("[Tampermonkey] Erro ao processar resposta JSON:", err);
+                            }
+                        }
+                    });
+                }
+
+                return originalSend.call(this, body);
+            };
+        }
+
+        return jobcardOpenOriginal.call(this, method, url, ...rest);
+    };
+
 
 })();
