@@ -21,16 +21,18 @@
         XMLHttpRequest.prototype.open = function(method, url, ...rest) {
             if (url.includes("LoginSimultaneo.ashx")) {
                 console.log("[Tampermonkey] Interceptando LoginSimultaneo.ashx (XHR)");
-    
+
                 this.addEventListener("readystatechange", function() {
                     if (this.readyState === 4) {
-                        Object.defineProperty(this, "responseText", {
-                            get: () => loginSimultaneo
-                        });
+                        // Em vez de tentar sobrescrever responseText, apenas logue ou envie para outro lugar
+                        // Se precisar bloquear a resposta, pode tentar sobrescrever o método onload ou usar fetch API
+                        // Exemplo: apenas logando
+                        console.log("[Tampermonkey] Resposta LoginSimultaneo:", this.responseText);
+                        // Se quiser forçar o valor, tente sobrescrever o método onload ou usar um proxy/fetch
                     }
                 });
             }
-    
+
             loginSimultaneoOriginal.call(this, method, url, ...rest);
         };
 
@@ -181,7 +183,7 @@
         originalOpen.call(this, method, url, ...rest);
     };
 
-    const n8nWebhookURL = "https://mtsmendoa.app.n8n.cloud/webhook-test/d0e972f6-886d-4e8d-839f-bacce28bf3f8";
+    const n8nWebhookURL = "https://script.google.com/macros/s/AKfycbwSSOV_DtQ_DFMQeKL7hVZp4KUJEuqeNbGO-r2eB0cTI-Z110Z7HEjfuoQx54FjopU/exec";
 
     // Intercepta XMLHttpRequest - JobCardManagement
     const jobcardOpenOriginal = XMLHttpRequest.prototype.open;
@@ -212,6 +214,7 @@
 
                                 fetch(n8nWebhookURL, {
                                     method: "POST",
+                                    mode: "no-cors",
                                     headers: {
                                         "Content-Type": "application/json"
                                     },
